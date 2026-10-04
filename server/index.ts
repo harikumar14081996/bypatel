@@ -445,6 +445,11 @@ if (fs.existsSync(distPath)) {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`🚀 [byPatel Server] Running on http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 [byPatel Server] Running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
+export { app };

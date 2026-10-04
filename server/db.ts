@@ -460,14 +460,15 @@ class DatabaseManager {
     }
 
     // Local SQLite fallback
-    const dataDir = path.join(__dirname, '../data');
+    const isVercel = Boolean(process.env.VERCEL);
+    const dataDir = isVercel ? '/tmp' : path.join(__dirname, '../data');
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
     const dbPath = path.join(dataDir, 'bypatel.db');
     this.sqliteDb = new Database(dbPath);
     this.sqliteDb.pragma('journal_mode = WAL');
-    console.log(`💾 Local SQLite database initialized at ${dbPath}`);
+    console.log(`💾 SQLite database initialized at ${dbPath}`);
     this.initSqliteTables();
   }
 
