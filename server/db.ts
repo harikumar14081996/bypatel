@@ -440,17 +440,18 @@ class DatabaseManager {
   }
 
   private async initDatabase() {
-    const dbUrl = process.env.DATABASE_URL;
+    const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL || process.env.NEON_DATABASE_URL;
 
     if (dbUrl && (dbUrl.startsWith('postgres://') || dbUrl.startsWith('postgresql://'))) {
       try {
+        const isNeonOrCloud = dbUrl.includes('neon.tech') || dbUrl.includes('supabase.co') || dbUrl.includes('aws') || process.env.NODE_ENV === 'production';
         this.pgPool = new Pool({
           connectionString: dbUrl,
-          ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
+          ssl: isNeonOrCloud ? { rejectUnauthorized: false } : undefined
         });
         await this.pgPool.query('SELECT NOW()');
         this.isPostgres = true;
-        console.log('⚡ Connected to PostgreSQL / Supabase Database');
+        console.log('⚡ Connected to Neon / PostgreSQL Cloud Database');
         await this.initPostgresTables();
         return;
       } catch (err) {
@@ -690,6 +691,89 @@ class DatabaseManager {
     if (fs.existsSync(schemaPath)) {
       const sql = fs.readFileSync(schemaPath, 'utf8');
       await this.pgPool.query(sql);
+    }
+    await this.seedPostgres();
+  }
+
+  private async seedPostgres() {
+    if (!this.pgPool) return;
+    try {
+      // Check company
+      const compRes = await this.pgPool.query("SELECT id FROM company_info WHERE id = 'primary'");
+      if (compRes.rows.length === 0) {
+        await this.pgPool.query(`
+          INSERT INTO company_info (id, name, tagline, hero_title, hero_subtitle, about_narrative, about_mission, stats, contact_email, contact_phone, address, socials)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        `, [
+          initialCompanyInfo.id, initialCompanyInfo.name, initialCompanyInfo.tagline,
+          initialCompanyInfo.hero_title, initialCompanyInfo.hero_subtitle,
+          initialCompanyInfo.about_narrative, initialCompanyInfo.about_mission,
+          JSON.stringify(initialCompanyInfo.stats), initialCompanyInfo.contact_email,
+          initialCompanyInfo.contact_phone, initialCompanyInfo.address,
+          JSON.stringify(initialCompanyInfo.socials)
+        ]);
+      }
+
+      // Check products
+      const prodRes = await this.pgPool.query("SELECT COUNT(*) as count FROM products");
+      if (parseInt(prodRes.rows[0]?.count || '0', 10) === 0) {
+        for (const p of initialProducts) {
+          await this.pgPool.query(`
+            INSERT INTO products (id, title, subtitle, category, description, long_description, icon_url, mockup_url, banner_url, screenshots, feature_list, tech_stack, play_store_url, app_store_url, web_url, rating, total_downloads, release_date, is_featured, is_visible, display_order)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+          `, [
+            p.id, p.title, p.subtitle, p.category, p.description, p.long_description || null,
+            p.icon_url, p.mockup_url, p.banner_url || null, JSON.stringify(p.screenshots),
+            JSON.stringify(p.feature_list), JSON.stringify(p.tech_stack),
+            p.play_store_url || null, p.app_store_url || null, p.web_url || null,
+            p.rating, p.total_downloads, p.release_date, p.is_featured, p.is_visible, p.display_order
+          ]);
+        }
+      }
+
+      // Check services
+      const srvRes = await this.pgPool.query("SELECT COUNT(*) as count FROM services");
+      if (parseInt(srvRes.rows[0]?.count || '0', 10) === 0) {
+        for (const s of initialServices) {
+          await this.pgPool.query(`
+            INSERT INTO services (id, title, slug, category, short_description, full_description, icon_name, deliverables, technologies, badge_text, display_order)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+          `, [
+            s.id, s.title, s.slug, s.category, s.short_description, s.full_description,
+            s.icon_name, JSON.stringify(s.deliverables), JSON.stringify(s.technologies),
+            s.badge_text || null, s.display_order
+          ]);
+        }
+      }
+
+      // Check legal pages
+      const legalRes = await this.pgPool.query("SELECT COUNT(*) as count FROM legal_pages");
+      if (parseInt(legalRes.rows[0]?.count || '0', 10) === 0) {
+        for (const l of initialLegalPages) {
+          await this.pgPool.query(`
+            INSERT INTO legal_pages (id, slug, title, last_updated, content_markdown)
+            VALUES ($1, $2, $3, $4, $5)
+          `, [l.id, l.slug, l.title, l.last_updated, l.content_markdown]);
+        }
+      }
+
+      // Check job postings
+      const jobRes = await this.pgPool.query("SELECT COUNT(*) as count FROM job_postings");
+      if (parseInt(jobRes.rows[0]?.count || '0', 10) === 0) {
+        for (const j of initialJobs) {
+          await this.pgPool.query(`
+            INSERT INTO job_postings (id, title, department, location, type, experience_level, salary_range, description, responsibilities, requirements, benefits, is_active)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+          `, [
+            j.id, j.title, j.department, j.location, j.type, j.experience_level,
+            j.salary_range || null, j.description, JSON.stringify(j.responsibilities),
+            JSON.stringify(j.requirements), JSON.stringify(j.benefits),
+            j.is_active
+          ]);
+        }
+      }
+    } catch (err) {
+      console.warn('⚠️ Error seeding PostgreSQL database:', err);
     }
   }
 
