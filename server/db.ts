@@ -433,9 +433,17 @@ class DatabaseManager {
   private isPostgres: boolean = false;
   private pgPool: Pool | null = null;
   private sqliteDb: any = null;
+  private initPromise: Promise<void> | null = null;
 
   constructor() {
-    this.initDatabase();
+    this.ensureInitialized();
+  }
+
+  public async ensureInitialized(): Promise<void> {
+    if (!this.initPromise) {
+      this.initPromise = this.initDatabase();
+    }
+    return this.initPromise;
   }
 
   private async initDatabase() {
@@ -926,6 +934,7 @@ class DatabaseManager {
 
   // --- Admin Authentication Methods ---
   async authenticateAdmin(email: string, password: string): Promise<{ success: boolean; user?: any }> {
+    await this.ensureInitialized();
     const cleanEmail = (email || '').trim().toLowerCase();
     const cleanPass = (password || '').trim();
 
@@ -967,10 +976,16 @@ class DatabaseManager {
 
   // --- Company Methods ---
   async getCompanyInfo(): Promise<CompanyInfo | null> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("SELECT * FROM company_info WHERE id = 'primary' LIMIT 1");
       if (res.rows.length === 0) return null;
-      return res.rows[0];
+      const r = res.rows[0];
+      return {
+        ...r,
+        stats: typeof r.stats === 'string' ? JSON.parse(r.stats || '[]') : (r.stats || []),
+        socials: typeof r.socials === 'string' ? JSON.parse(r.socials || '{}') : (r.socials || {})
+      };
     } else if (this.sqliteDb) {
       const row: any = this.sqliteDb.prepare("SELECT * FROM company_info WHERE id = 'primary'").get();
       if (!row) return null;
@@ -984,6 +999,7 @@ class DatabaseManager {
   }
 
   async updateCompanyInfo(updates: Partial<CompanyInfo>): Promise<CompanyInfo | null> {
+    await this.ensureInitialized();
     const current = await this.getCompanyInfo();
     if (!current) return null;
 
@@ -999,9 +1015,9 @@ class DatabaseManager {
         WHERE id = 'primary'
       `, [
         merged.name, merged.tagline, merged.hero_title, merged.hero_subtitle,
-        merged.about_narrative, merged.about_mission, JSON.stringify(merged.stats),
+        merged.about_narrative, merged.about_mission, JSON.stringify(merged.stats || []),
         merged.contact_email, merged.contact_phone, merged.address,
-        JSON.stringify(merged.socials)
+        JSON.stringify(merged.socials || {})
       ]);
     } else if (this.sqliteDb) {
       this.sqliteDb.prepare(`
@@ -1023,12 +1039,21 @@ class DatabaseManager {
 
   // --- Products Methods ---
   async getProducts(includeHidden = false): Promise<Product[]> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const query = includeHidden
         ? "SELECT * FROM products ORDER BY display_order ASC"
         : "SELECT * FROM products WHERE is_visible = true ORDER BY display_order ASC";
       const res = await this.pgPool.query(query);
-      return res.rows;
+      return res.rows.map(r => ({
+        ...r,
+        screenshots: typeof r.screenshots === 'string' ? JSON.parse(r.screenshots || '[]') : (r.screenshots || []),
+        feature_list: typeof r.feature_list === 'string' ? JSON.parse(r.feature_list || '[]') : (r.feature_list || []),
+        tech_stack: typeof r.tech_stack === 'string' ? JSON.parse(r.tech_stack || '[]') : (r.tech_stack || []),
+        rating: typeof r.rating === 'string' ? parseFloat(r.rating) : (r.rating || 4.9),
+        is_featured: Boolean(r.is_featured),
+        is_visible: Boolean(r.is_visible)
+      }));
     } else if (this.sqliteDb) {
       const query = includeHidden
         ? "SELECT * FROM products ORDER BY display_order ASC"
@@ -1047,11 +1072,13 @@ class DatabaseManager {
   }
 
   async getProductById(id: string): Promise<Product | null> {
+    await this.ensureInitialized();
     const products = await this.getProducts(true);
     return products.find(p => p.id === id) || null;
   }
 
   async createProduct(prod: Product): Promise<Product> {
+    await this.ensureInitialized();
     const id = prod.id || `prod_${Date.now()}`;
     const newProd: Product = { ...prod, id };
 
@@ -1100,6 +1127,7 @@ class DatabaseManager {
   }
 
   async updateProduct(id: string, updates: Partial<Product>): Promise<Product | null> {
+    await this.ensureInitialized();
     const products = await this.getProducts(true);
     const current = products.find(p => p.id === id);
     if (!current) return null;
@@ -1145,6 +1173,7 @@ class DatabaseManager {
   }
 
   async toggleProductVisibility(id: string, is_visible: boolean): Promise<boolean> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("UPDATE products SET is_visible = $1 WHERE id = $2", [is_visible, id]);
       return (res.rowCount ?? 0) > 0;
@@ -1156,6 +1185,7 @@ class DatabaseManager {
   }
 
   async deleteProduct(id: string): Promise<boolean> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("DELETE FROM products WHERE id = $1", [id]);
       return (res.rowCount ?? 0) > 0;
@@ -1168,9 +1198,14 @@ class DatabaseManager {
 
   // --- Services Methods ---
   async getServices(): Promise<ServiceItem[]> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("SELECT * FROM services ORDER BY display_order ASC");
-      return res.rows;
+      return res.rows.map(r => ({
+        ...r,
+        deliverables: typeof r.deliverables === 'string' ? JSON.parse(r.deliverables || '[]') : (r.deliverables || []),
+        technologies: typeof r.technologies === 'string' ? JSON.parse(r.technologies || '[]') : (r.technologies || [])
+      }));
     } else if (this.sqliteDb) {
       const rows: any[] = this.sqliteDb.prepare("SELECT * FROM services ORDER BY display_order ASC").all();
       return rows.map(r => ({
@@ -1183,6 +1218,7 @@ class DatabaseManager {
   }
 
   async createService(service: ServiceItem): Promise<ServiceItem> {
+    await this.ensureInitialized();
     const id = service.id || `srv_${Date.now()}`;
     const newService: ServiceItem = { ...service, id };
 
@@ -1211,6 +1247,7 @@ class DatabaseManager {
   }
 
   async updateService(id: string, updates: Partial<ServiceItem>): Promise<ServiceItem | null> {
+    await this.ensureInitialized();
     const services = await this.getServices();
     const current = services.find(s => s.id === id);
     if (!current) return null;
@@ -1248,6 +1285,7 @@ class DatabaseManager {
   }
 
   async deleteService(id: string): Promise<boolean> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("DELETE FROM services WHERE id = $1", [id]);
       return (res.rowCount ?? 0) > 0;
@@ -1260,6 +1298,7 @@ class DatabaseManager {
 
   // --- Legal Pages ---
   async getLegalPages(): Promise<LegalPage[]> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("SELECT * FROM legal_pages");
       return res.rows;
@@ -1270,11 +1309,13 @@ class DatabaseManager {
   }
 
   async getLegalPage(slug: string): Promise<LegalPage | null> {
+    await this.ensureInitialized();
     const pages = await this.getLegalPages();
     return pages.find(p => p.slug === slug) || null;
   }
 
   async updateLegalPage(slug: string, data: { title?: string; content_markdown?: string; last_updated?: string }): Promise<LegalPage | null> {
+    await this.ensureInitialized();
     const current = await this.getLegalPage(slug);
     if (!current) return null;
 
@@ -1307,6 +1348,7 @@ class DatabaseManager {
     timeline?: string;
     project_scope: string;
   }): Promise<ClientLead> {
+    await this.ensureInitialized();
     const id = `lead_${Date.now()}`;
     const newLead: ClientLead = {
       id,
@@ -1338,6 +1380,7 @@ class DatabaseManager {
   }
 
   async getClientLeads(): Promise<ClientLead[]> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("SELECT * FROM client_leads ORDER BY created_at DESC");
       return res.rows;
@@ -1349,6 +1392,7 @@ class DatabaseManager {
   }
 
   async updateLeadStatus(id: string, status: string): Promise<boolean> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("UPDATE client_leads SET status = $1 WHERE id = $2", [status, id]);
       return (res.rowCount ?? 0) > 0;
@@ -1360,6 +1404,7 @@ class DatabaseManager {
   }
 
   async deleteLead(id: string): Promise<boolean> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("DELETE FROM client_leads WHERE id = $1", [id]);
       return (res.rowCount ?? 0) > 0;
@@ -1372,12 +1417,19 @@ class DatabaseManager {
 
   // --- Careers & Job Postings ---
   async getJobPostings(includeInactive = false): Promise<JobPosting[]> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const query = includeInactive
         ? "SELECT * FROM job_postings ORDER BY created_at DESC"
         : "SELECT * FROM job_postings WHERE is_active = true ORDER BY created_at DESC";
       const res = await this.pgPool.query(query);
-      return res.rows;
+      return res.rows.map(r => ({
+        ...r,
+        responsibilities: typeof r.responsibilities === 'string' ? JSON.parse(r.responsibilities || '[]') : (r.responsibilities || []),
+        requirements: typeof r.requirements === 'string' ? JSON.parse(r.requirements || '[]') : (r.requirements || []),
+        benefits: typeof r.benefits === 'string' ? JSON.parse(r.benefits || '[]') : (r.benefits || []),
+        is_active: Boolean(r.is_active)
+      }));
     } else if (this.sqliteDb) {
       const query = includeInactive
         ? "SELECT * FROM job_postings ORDER BY created_at DESC"
@@ -1395,11 +1447,13 @@ class DatabaseManager {
   }
 
   async getJobPostingById(id: string): Promise<JobPosting | null> {
+    await this.ensureInitialized();
     const jobs = await this.getJobPostings(true);
     return jobs.find(j => j.id === id) || null;
   }
 
   async createJobPosting(job: Partial<JobPosting>): Promise<JobPosting> {
+    await this.ensureInitialized();
     const id = job.id || `job_${Date.now()}`;
     const newJob: JobPosting = {
       id,
@@ -1444,6 +1498,7 @@ class DatabaseManager {
   }
 
   async updateJobPosting(id: string, updates: Partial<JobPosting>): Promise<JobPosting | null> {
+    await this.ensureInitialized();
     const current = await this.getJobPostingById(id);
     if (!current) return null;
 
@@ -1480,6 +1535,7 @@ class DatabaseManager {
   }
 
   async deleteJobPosting(id: string): Promise<boolean> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("DELETE FROM job_postings WHERE id = $1", [id]);
       return (res.rowCount ?? 0) > 0;
@@ -1503,6 +1559,7 @@ class DatabaseManager {
     cover_letter?: string;
     resume_text?: string;
   }): Promise<JobApplication> {
+    await this.ensureInitialized();
     const id = `app_${Date.now()}`;
     // Generate clean unique tracking code: e.g. BP-APP-78219
     const randomSuffix = Math.floor(10000 + Math.random() * 90000);
@@ -1550,6 +1607,7 @@ class DatabaseManager {
   }
 
   async getJobApplications(): Promise<JobApplication[]> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("SELECT * FROM job_applications ORDER BY created_at DESC");
       return res.rows;
@@ -1560,6 +1618,7 @@ class DatabaseManager {
   }
 
   async getApplicationByTrackingCode(trackingCode: string): Promise<JobApplication | null> {
+    await this.ensureInitialized();
     const cleanCode = trackingCode.trim().toUpperCase();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query(
@@ -1577,6 +1636,7 @@ class DatabaseManager {
   }
 
   async updateApplicationStatus(id: string, status: string, admin_notes?: string): Promise<boolean> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query(
         "UPDATE job_applications SET status = $1, admin_notes = COALESCE($2, admin_notes), updated_at = CURRENT_TIMESTAMP WHERE id = $3",
@@ -1593,6 +1653,7 @@ class DatabaseManager {
   }
 
   async deleteJobApplication(id: string): Promise<boolean> {
+    await this.ensureInitialized();
     if (this.isPostgres && this.pgPool) {
       const res = await this.pgPool.query("DELETE FROM job_applications WHERE id = $1", [id]);
       return (res.rowCount ?? 0) > 0;
@@ -1605,3 +1666,4 @@ class DatabaseManager {
 }
 
 export const db = new DatabaseManager();
+
