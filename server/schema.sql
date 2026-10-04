@@ -1,6 +1,14 @@
--- PostgreSQL / Supabase / Neon Schema for byPatel Platform
+-- 1. Admin Users & Credentials
+CREATE TABLE IF NOT EXISTS admin_users (
+    id VARCHAR(100) PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL DEFAULT 'Master Admin',
+    role VARCHAR(50) NOT NULL DEFAULT 'superadmin',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
--- 1. Company Information
+-- 2. Company Information
 CREATE TABLE IF NOT EXISTS company_info (
     id VARCHAR(50) PRIMARY KEY DEFAULT 'primary',
     name VARCHAR(100) NOT NULL DEFAULT 'byPatel',

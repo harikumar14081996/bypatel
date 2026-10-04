@@ -23,26 +23,17 @@ app.get('/api/health', (_req, res) => {
 });
 
 // --- ADMIN AUTH ---
-app.post('/api/admin/login', (req, res) => {
-  const emailInput = (req.body.email || '').trim().toLowerCase();
+app.post('/api/admin/login', async (req, res) => {
+  const emailInput = (req.body.email || '').trim();
   const passwordInput = (req.body.password || '').trim();
 
-  const validEmails = [
-    ADMIN_EMAIL.toLowerCase(),
-    'info@bypatel.com',
-    'admin@bypatel.io',
-    'admin'
-  ];
-
-  const isValidEmail = validEmails.includes(emailInput);
-  const isValidPassword = passwordInput === ADMIN_PASSWORD || passwordInput === 'bypatel_admin_2025';
-
-  if (isValidEmail && isValidPassword) {
+  const authResult = await db.authenticateAdmin(emailInput, passwordInput);
+  if (authResult.success) {
     const token = `bypatel_auth_${Buffer.from(`${emailInput}:${Date.now()}`).toString('base64')}`;
     return res.json({
       success: true,
       token,
-      user: { email: 'info@bypatel.com', name: 'byPatel Master Admin', role: 'superadmin' }
+      user: authResult.user || { email: 'info@bypatel.com', name: 'byPatel Master Admin', role: 'superadmin' }
     });
   }
   return res.status(401).json({ error: 'Invalid admin credentials. Please use info@bypatel.com and bypatel_admin_2025' });
