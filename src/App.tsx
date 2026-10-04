@@ -79,7 +79,7 @@ export const App: React.FC = () => {
           }
         }, 80);
       } else {
-        window.history.pushState(null, '', '#');
+        window.history.pushState(null, '', window.location.pathname);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }

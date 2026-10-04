@@ -66,7 +66,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
   // Auth state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [email, setEmail] = useState('admin@bypatel.io');
+  const [email, setEmail] = useState('info@bypatel.com');
   const [password, setPassword] = useState('bypatel_admin_2025');
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
