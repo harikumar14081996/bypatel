@@ -1,4 +1,3 @@
-import Database from 'better-sqlite3';
 import { Pool } from 'pg';
 import path from 'path';
 import fs from 'fs';
@@ -433,7 +432,7 @@ const initialJobs: JobPosting[] = [
 class DatabaseManager {
   private isPostgres: boolean = false;
   private pgPool: Pool | null = null;
-  private sqliteDb: Database.Database | null = null;
+  private sqliteDb: any = null;
 
   constructor() {
     this.initDatabase();
@@ -460,16 +459,21 @@ class DatabaseManager {
     }
 
     // Local SQLite fallback
-    const isVercel = Boolean(process.env.VERCEL);
-    const dataDir = isVercel ? '/tmp' : path.join(__dirname, '../data');
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+    try {
+      const SQLite = (await import('better-sqlite3')).default;
+      const isVercel = Boolean(process.env.VERCEL);
+      const dataDir = isVercel ? '/tmp' : path.join(__dirname, '../data');
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+      const dbPath = path.join(dataDir, 'bypatel.db');
+      this.sqliteDb = new SQLite(dbPath);
+      this.sqliteDb.pragma('journal_mode = WAL');
+      console.log(`💾 SQLite database initialized at ${dbPath}`);
+      this.initSqliteTables();
+    } catch (sqliteErr) {
+      console.warn('ℹ️ SQLite module skipped in cloud environment:', sqliteErr);
     }
-    const dbPath = path.join(dataDir, 'bypatel.db');
-    this.sqliteDb = new Database(dbPath);
-    this.sqliteDb.pragma('journal_mode = WAL');
-    console.log(`💾 SQLite database initialized at ${dbPath}`);
-    this.initSqliteTables();
   }
 
   private initSqliteTables() {
