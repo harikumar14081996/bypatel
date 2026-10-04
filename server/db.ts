@@ -487,6 +487,15 @@ class DatabaseManager {
   private initSqliteTables() {
     if (!this.sqliteDb) return;
     this.sqliteDb.exec(`
+      CREATE TABLE IF NOT EXISTS admin_users (
+        id TEXT PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        name TEXT NOT NULL DEFAULT 'Master Admin',
+        role TEXT NOT NULL DEFAULT 'superadmin',
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      );
+
       CREATE TABLE IF NOT EXISTS company_info (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -607,6 +616,18 @@ class DatabaseManager {
   private seedSqlite() {
     if (!this.sqliteDb) return;
     
+    // Check admin_users
+    const adminCount: any = this.sqliteDb.prepare('SELECT COUNT(*) as count FROM admin_users').get();
+    if (adminCount.count === 0) {
+      const insertAdmin = this.sqliteDb.prepare(`
+        INSERT OR IGNORE INTO admin_users (id, email, password_hash, name, role)
+        VALUES (?, ?, ?, ?, ?)
+      `);
+      insertAdmin.run('admin_primary', 'info@bypatel.com', 'bypatel_admin_2025', 'byPatel Master Admin', 'superadmin');
+      insertAdmin.run('admin_alias_1', 'admin@bypatel.io', 'bypatel_admin_2025', 'byPatel Admin', 'superadmin');
+      insertAdmin.run('admin_alias_2', 'admin', 'bypatel_admin_2025', 'Root Admin', 'superadmin');
+    }
+
     // Check company
     const comp = this.sqliteDb.prepare('SELECT id FROM company_info WHERE id = ?').get('primary');
     if (!comp) {
