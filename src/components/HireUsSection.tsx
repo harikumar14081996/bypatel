@@ -90,21 +90,32 @@ export const HireUsSection: React.FC<HireUsSectionProps> = ({ preselectedService
     e.preventDefault();
     setErrorMessage(null);
 
-    if (!fullName.trim() || !email.trim() || !projectScope.trim()) {
+    const cleanName = fullName.trim();
+    const cleanEmail = email.trim();
+    const cleanScope = projectScope.trim();
+    const cleanCompany = company.trim();
+    const cleanBudget = budgetRange.trim() || 'Flexible / To be discussed';
+
+    if (!cleanName || !cleanEmail || !cleanScope) {
       setErrorMessage('Please fill in your name, email, and project details.');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setErrorMessage('Please enter a valid email address.');
       return;
     }
 
     try {
       setIsSubmitting(true);
       await api.submitLead({
-        full_name: fullName,
-        email,
-        company,
+        full_name: cleanName,
+        email: cleanEmail,
+        company: cleanCompany,
         project_type: projectType,
-        budget_range: budgetRange.trim() || 'Flexible / To be discussed',
+        budget_range: cleanBudget,
         timeline,
-        project_scope: projectScope,
+        project_scope: cleanScope,
       });
 
       setIsSubmitting(false);
@@ -180,6 +191,7 @@ export const HireUsSection: React.FC<HireUsSectionProps> = ({ preselectedService
           ) : (
             <motion.form
               key="form"
+              noValidate
               onSubmit={handleSubmit}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -236,13 +248,16 @@ export const HireUsSection: React.FC<HireUsSectionProps> = ({ preselectedService
               {/* 2. Client Details Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                  <label htmlFor="lead-name" className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
                     <User className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                     <span>Your Name *</span>
                   </label>
                   <input
+                    id="lead-name"
+                    name="fullName"
                     type="text"
                     required
+                    autoComplete="name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Alex Patel"
@@ -251,13 +266,16 @@ export const HireUsSection: React.FC<HireUsSectionProps> = ({ preselectedService
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                  <label htmlFor="lead-email" className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
                     <Mail className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                     <span>Email Address *</span>
                   </label>
                   <input
+                    id="lead-email"
+                    name="email"
                     type="email"
                     required
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="alex@example.com"
@@ -266,12 +284,15 @@ export const HireUsSection: React.FC<HireUsSectionProps> = ({ preselectedService
                 </div>
 
                 <div className="space-y-1.5 sm:col-span-2">
-                  <label className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                  <label htmlFor="lead-company" className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
                     <Building2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                     <span>Business / Hotel / Organization Name (Optional)</span>
                   </label>
                   <input
+                    id="lead-company"
+                    name="company"
                     type="text"
+                    autoComplete="organization"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     placeholder="e.g. Sunrise Motel, Bayview Hotel, or Local Business"
@@ -282,11 +303,13 @@ export const HireUsSection: React.FC<HireUsSectionProps> = ({ preselectedService
 
               {/* 3. Estimated Budget Range */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                <label htmlFor="lead-budget" className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
                   <DollarSign className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                   <span>2. Estimated Budget Range</span>
                 </label>
                 <input
+                  id="lead-budget"
+                  name="budgetRange"
                   type="text"
                   value={budgetRange}
                   onChange={(e) => setBudgetRange(e.target.value)}
@@ -321,11 +344,13 @@ export const HireUsSection: React.FC<HireUsSectionProps> = ({ preselectedService
 
               {/* 5. Project Scope Description */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                <label htmlFor="lead-scope" className="block text-xs font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
                   <FileText className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                   <span>4. Project Scope & Needs *</span>
                 </label>
                 <textarea
+                  id="lead-scope"
+                  name="projectScope"
                   required
                   rows={4}
                   value={projectScope}

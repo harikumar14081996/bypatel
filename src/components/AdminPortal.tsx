@@ -1156,7 +1156,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
                 {/* TAB 5: COMPANY IDENTITY */}
                 {activeTab === 'company' && (
-                  <form onSubmit={handleSaveCompany} className="space-y-5 max-w-3xl">
+                  <form noValidate onSubmit={handleSaveCompany} className="space-y-5 max-w-3xl">
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="font-heading text-base font-bold text-zinc-950 dark:text-white">Studio Brand & Story</h3>
@@ -1479,7 +1479,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                   </button>
                 </div>
 
-                <form onSubmit={handleSaveJob} className="space-y-4">
+                <form noValidate onSubmit={handleSaveJob} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1 sm:col-span-2">
                       <label className="text-[11px] font-bold uppercase">Role Title *</label>
@@ -1607,7 +1607,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                   </button>
                 </div>
 
-                <form onSubmit={handleSaveProduct} className="space-y-4">
+                <form noValidate onSubmit={handleSaveProduct} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-[11px] font-bold uppercase">Product Title *</label>

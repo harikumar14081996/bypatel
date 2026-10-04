@@ -183,20 +183,37 @@ export const api = {
     timeline?: string;
     project_scope: string;
   }): Promise<{ success: boolean; lead: ClientLead }> => {
-    const res = await fetch(`${API_BASE}/leads`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(lead),
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'Failed to submit inquiry');
+    try {
+      const res = await fetch(`${API_BASE}/leads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          full_name: (lead.full_name || '').trim(),
+          email: (lead.email || '').trim(),
+          company: (lead.company || '').trim(),
+          project_type: (lead.project_type || 'Mobile App').trim(),
+          budget_range: (lead.budget_range || 'Flexible').trim(),
+          timeline: (lead.timeline || 'Flexible').trim(),
+          project_scope: (lead.project_scope || '').trim(),
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(data?.error || `Failed to submit inquiry (Status ${res.status})`);
+      }
+      return data;
+    } catch (err: any) {
+      throw new Error(err.message || 'Failed to submit project inquiry');
     }
-    return res.json();
   },
 
   getLeads: async (): Promise<ClientLead[]> => {
-    const res = await fetch(`${API_BASE}/leads`);
+    const res = await fetch(`${API_BASE}/leads`, {
+      headers: { 'Accept': 'application/json' },
+    });
     if (!res.ok) throw new Error('Failed to fetch leads');
     return res.json();
   },
@@ -204,7 +221,10 @@ export const api = {
   updateLeadStatus: async (id: string, status: string): Promise<{ success: boolean }> => {
     const res = await fetch(`${API_BASE}/leads/${id}/status`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
       body: JSON.stringify({ status }),
     });
     if (!res.ok) throw new Error('Failed to update lead status');
@@ -214,6 +234,7 @@ export const api = {
   deleteLead: async (id: string): Promise<{ success: boolean }> => {
     const res = await fetch(`${API_BASE}/leads/${id}`, {
       method: 'DELETE',
+      headers: { 'Accept': 'application/json' },
     });
     if (!res.ok) throw new Error('Failed to delete lead');
     return res.json();
@@ -221,13 +242,17 @@ export const api = {
 
   // --- Careers & Job Postings ---
   getJobs: async (all = false): Promise<JobPosting[]> => {
-    const res = await fetch(`${API_BASE}/jobs${all ? '?all=true' : ''}`);
+    const res = await fetch(`${API_BASE}/jobs${all ? '?all=true' : ''}`, {
+      headers: { 'Accept': 'application/json' },
+    });
     if (!res.ok) throw new Error('Failed to fetch job postings');
     return res.json();
   },
 
   getJobById: async (id: string): Promise<JobPosting> => {
-    const res = await fetch(`${API_BASE}/jobs/${id}`);
+    const res = await fetch(`${API_BASE}/jobs/${id}`, {
+      headers: { 'Accept': 'application/json' },
+    });
     if (!res.ok) throw new Error('Failed to fetch job details');
     return res.json();
   },
@@ -235,7 +260,10 @@ export const api = {
   createJob: async (job: Partial<JobPosting>): Promise<JobPosting> => {
     const res = await fetch(`${API_BASE}/jobs`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
       body: JSON.stringify(job),
     });
     if (!res.ok) throw new Error('Failed to create job posting');
@@ -246,7 +274,10 @@ export const api = {
   updateJob: async (id: string, job: Partial<JobPosting>): Promise<JobPosting> => {
     const res = await fetch(`${API_BASE}/jobs/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
       body: JSON.stringify(job),
     });
     if (!res.ok) throw new Error('Failed to update job posting');
@@ -257,6 +288,7 @@ export const api = {
   deleteJob: async (id: string): Promise<{ success: boolean }> => {
     const res = await fetch(`${API_BASE}/jobs/${id}`, {
       method: 'DELETE',
+      headers: { 'Accept': 'application/json' },
     });
     if (!res.ok) throw new Error('Failed to delete job posting');
     return res.json();
@@ -273,16 +305,32 @@ export const api = {
     cover_letter?: string;
     resume_text?: string;
   }): Promise<{ success: boolean; tracking_code: string; application: JobApplication; message: string }> => {
-    const res = await fetch(`${API_BASE}/jobs/${jobId}/apply`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(application),
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'Failed to submit application');
+    try {
+      const res = await fetch(`${API_BASE}/jobs/${jobId}/apply`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          applicant_name: (application.applicant_name || '').trim(),
+          email: (application.email || '').trim(),
+          phone: (application.phone || '').trim(),
+          portfolio_url: (application.portfolio_url || '').trim(),
+          github_url: (application.github_url || '').trim(),
+          linkedin_url: (application.linkedin_url || '').trim(),
+          cover_letter: (application.cover_letter || '').trim(),
+          resume_text: (application.resume_text || '').trim(),
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(data?.error || `Failed to submit application (Status ${res.status})`);
+      }
+      return data;
+    } catch (err: any) {
+      throw new Error(err.message || 'Failed to submit application');
     }
-    return res.json();
   },
 
   checkApplicationStatus: async (code: string): Promise<{
@@ -293,16 +341,25 @@ export const api = {
     created_at: string;
     updated_at: string;
   }> => {
-    const res = await fetch(`${API_BASE}/careers/status/${encodeURIComponent(code.trim())}`);
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'Application not found with that tracking code or email');
+    try {
+      const cleanCode = (code || '').trim();
+      const res = await fetch(`${API_BASE}/careers/status/${encodeURIComponent(cleanCode)}`, {
+        headers: { 'Accept': 'application/json' },
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(data?.error || 'Application not found with that tracking code or email');
+      }
+      return data;
+    } catch (err: any) {
+      throw new Error(err.message || 'Application not found');
     }
-    return res.json();
   },
 
   getAdminApplications: async (): Promise<JobApplication[]> => {
-    const res = await fetch(`${API_BASE}/admin/applications`);
+    const res = await fetch(`${API_BASE}/admin/applications`, {
+      headers: { 'Accept': 'application/json' },
+    });
     if (!res.ok) throw new Error('Failed to fetch job applications');
     return res.json();
   },
@@ -310,7 +367,10 @@ export const api = {
   updateApplicationStatus: async (id: string, status: string, admin_notes?: string): Promise<{ success: boolean }> => {
     const res = await fetch(`${API_BASE}/admin/applications/${id}/status`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
       body: JSON.stringify({ status, admin_notes }),
     });
     if (!res.ok) throw new Error('Failed to update candidate status');
@@ -320,6 +380,7 @@ export const api = {
   deleteApplication: async (id: string): Promise<{ success: boolean }> => {
     const res = await fetch(`${API_BASE}/admin/applications/${id}`, {
       method: 'DELETE',
+      headers: { 'Accept': 'application/json' },
     });
     if (!res.ok) throw new Error('Failed to delete application');
     return res.json();

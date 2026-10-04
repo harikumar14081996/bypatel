@@ -73,20 +73,32 @@ export const CareersPage: React.FC<CareersPageProps> = ({ jobs, onRefreshJobs, o
     if (!selectedJob) return;
     setApplyError(null);
 
-    if (!applicantName.trim() || !applicantEmail.trim()) {
+    const cleanName = applicantName.trim();
+    const cleanEmail = applicantEmail.trim();
+    const cleanPhone = applicantPhone.trim();
+    const cleanPortfolio = portfolioUrl.trim();
+    const cleanGithub = githubUrl.trim();
+    const cleanCover = coverLetter.trim();
+
+    if (!cleanName || !cleanEmail) {
       setApplyError('Please provide your name and email address.');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setApplyError('Please enter a valid email address.');
       return;
     }
 
     try {
       setIsApplying(true);
       const res = await api.applyForJob(selectedJob.id, {
-        applicant_name: applicantName,
-        email: applicantEmail,
-        phone: applicantPhone,
-        portfolio_url: portfolioUrl,
-        github_url: githubUrl,
-        cover_letter: coverLetter,
+        applicant_name: cleanName,
+        email: cleanEmail,
+        phone: cleanPhone,
+        portfolio_url: cleanPortfolio,
+        github_url: cleanGithub,
+        cover_letter: cleanCover,
       });
 
       setIsApplying(false);
@@ -112,14 +124,15 @@ export const CareersPage: React.FC<CareersPageProps> = ({ jobs, onRefreshJobs, o
     setTrackerError(null);
     setTrackingResult(null);
 
-    if (!trackerCodeInput.trim()) {
+    const cleanQuery = trackerCodeInput.trim();
+    if (!cleanQuery) {
       setTrackerError('Please enter a valid tracking code or application email.');
       return;
     }
 
     try {
       setIsTracking(true);
-      const result = await api.checkApplicationStatus(trackerCodeInput);
+      const result = await api.checkApplicationStatus(cleanQuery);
       setTrackingResult(result);
     } catch (err: any) {
       setTrackerError(err.message || 'No application record found.');
@@ -251,8 +264,10 @@ export const CareersPage: React.FC<CareersPageProps> = ({ jobs, onRefreshJobs, o
           </div>
         </div>
 
-        <form onSubmit={handleCheckStatus} className="flex flex-col sm:flex-row gap-3">
+        <form noValidate onSubmit={handleCheckStatus} className="flex flex-col sm:flex-row gap-3">
           <input
+            id="tracker-input"
+            name="trackerCode"
             type="text"
             value={trackerCodeInput}
             onChange={(e) => setTrackerCodeInput(e.target.value)}
@@ -567,7 +582,7 @@ export const CareersPage: React.FC<CareersPageProps> = ({ jobs, onRefreshJobs, o
                     </div>
 
                     {/* Application Form */}
-                    <form onSubmit={handleApplySubmit} className="pt-6 border-t border-black/[0.06] dark:border-white/10 space-y-4">
+                    <form noValidate onSubmit={handleApplySubmit} className="pt-6 border-t border-black/[0.06] dark:border-white/10 space-y-4">
                       <h4 className="font-heading text-base font-bold text-zinc-950 dark:text-white">
                         Submit Your Candidacy
                       </h4>
@@ -580,10 +595,13 @@ export const CareersPage: React.FC<CareersPageProps> = ({ jobs, onRefreshJobs, o
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-1">
-                          <label className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">Your Full Name *</label>
+                          <label htmlFor="applicant-name" className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">Your Full Name *</label>
                           <input
+                            id="applicant-name"
+                            name="applicantName"
                             type="text"
                             required
+                            autoComplete="name"
                             value={applicantName}
                             onChange={(e) => setApplicantName(e.target.value)}
                             placeholder="e.g. Jordan Lee"
@@ -592,10 +610,13 @@ export const CareersPage: React.FC<CareersPageProps> = ({ jobs, onRefreshJobs, o
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">Email Address *</label>
+                          <label htmlFor="applicant-email" className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">Email Address *</label>
                           <input
+                            id="applicant-email"
+                            name="applicantEmail"
                             type="email"
                             required
+                            autoComplete="email"
                             value={applicantEmail}
                             onChange={(e) => setApplicantEmail(e.target.value)}
                             placeholder="jordan@example.com"
@@ -604,8 +625,10 @@ export const CareersPage: React.FC<CareersPageProps> = ({ jobs, onRefreshJobs, o
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">Portfolio / Website Link</label>
+                          <label htmlFor="applicant-portfolio" className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">Portfolio / Website Link</label>
                           <input
+                            id="applicant-portfolio"
+                            name="portfolioUrl"
                             type="text"
                             value={portfolioUrl}
                             onChange={(e) => setPortfolioUrl(e.target.value)}
@@ -615,8 +638,10 @@ export const CareersPage: React.FC<CareersPageProps> = ({ jobs, onRefreshJobs, o
                         </div>
 
                         <div className="space-y-1">
-                          <label className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">GitHub / App Store Link</label>
+                          <label htmlFor="applicant-github" className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">GitHub / App Store Link</label>
                           <input
+                            id="applicant-github"
+                            name="githubUrl"
                             type="text"
                             value={githubUrl}
                             onChange={(e) => setGithubUrl(e.target.value)}
@@ -626,8 +651,10 @@ export const CareersPage: React.FC<CareersPageProps> = ({ jobs, onRefreshJobs, o
                         </div>
 
                         <div className="space-y-1 sm:col-span-2">
-                          <label className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">Brief Note / What makes you proud?</label>
+                          <label htmlFor="applicant-note" className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 uppercase">Brief Note / What makes you proud?</label>
                           <textarea
+                            id="applicant-note"
+                            name="coverLetter"
                             rows={3}
                             value={coverLetter}
                             onChange={(e) => setCoverLetter(e.target.value)}
