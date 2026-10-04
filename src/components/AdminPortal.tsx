@@ -124,11 +124,20 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('bypatel_admin_token');
-    if (token) {
-      api.adminVerify(token).then((res) => {
-        if (res.valid) setIsAuthenticated(true);
-      });
+    try {
+      const token = localStorage.getItem('bypatel_admin_token');
+      if (token && typeof token === 'string' && token.trim().length > 0) {
+        api.adminVerify(token.trim())
+          .then((res) => {
+            if (res.valid) setIsAuthenticated(true);
+            else localStorage.removeItem('bypatel_admin_token');
+          })
+          .catch(() => {
+            localStorage.removeItem('bypatel_admin_token');
+          });
+      }
+    } catch (e) {
+      console.warn('LocalStorage access warning:', e);
     }
   }, []);
 
@@ -203,10 +212,20 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     setAuthError(null);
     setAuthLoading(true);
     try {
-      const res = await api.adminLogin(email, password);
-      localStorage.setItem('bypatel_admin_token', res.token);
-      setIsAuthenticated(true);
-      showToast('Welcome back, Master Admin');
+      const cleanEmail = (email || '').trim();
+      const cleanPass = (password || '').trim();
+      const res = await api.adminLogin(cleanEmail, cleanPass);
+      if (res && res.token) {
+        try {
+          localStorage.setItem('bypatel_admin_token', res.token);
+        } catch (storageErr) {
+          console.warn('Could not store token:', storageErr);
+        }
+        setIsAuthenticated(true);
+        showToast('Welcome back, Master Admin');
+      } else {
+        throw new Error('Authentication succeeded but invalid token response received.');
+      }
     } catch (err: any) {
       setAuthError(err.message || 'Login failed. Please verify credentials.');
     } finally {
@@ -215,7 +234,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('bypatel_admin_token');
+    try {
+      localStorage.removeItem('bypatel_admin_token');
+    } catch {}
     setIsAuthenticated(false);
     showToast('Signed out securely');
   };
@@ -607,16 +628,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                   </div>
                 )}
 
-                <form onSubmit={handleLogin} className="space-y-3.5 text-left">
+                <form onSubmit={handleLogin} noValidate className="space-y-3.5 text-left">
                   <div className="space-y-1">
                     <label className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
-                      Admin Email
+                      Admin Email / ID
                     </label>
                     <input
                       type="text"
+                      name="admin-email"
+                      autoComplete="username"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      placeholder="info@bypatel.com"
                       className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-black/10 dark:border-white/15 text-zinc-950 dark:text-white text-xs sm:text-sm focus:border-indigo-500 focus:outline-none"
                     />
                   </div>
@@ -627,6 +651,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     </label>
                     <input
                       type="password"
+                      name="admin-password"
+                      autoComplete="current-password"
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}

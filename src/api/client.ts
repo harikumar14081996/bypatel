@@ -5,24 +5,40 @@ const API_BASE = '/api';
 export const api = {
   // Admin Auth
   adminLogin: async (email: string, password: string): Promise<{ success: boolean; token: string; user: any }> => {
-    const res = await fetch(`${API_BASE}/admin/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'Authentication failed');
+    try {
+      const res = await fetch(`${API_BASE}/admin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email: (email || '').trim(), password: (password || '').trim() }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(data?.error || `Authentication failed (Status ${res.status})`);
+      }
+      return data;
+    } catch (err: any) {
+      throw new Error(err.message || 'Authentication failed');
     }
-    return res.json();
   },
 
   adminVerify: async (token: string): Promise<{ valid: boolean; user?: any }> => {
-    const res = await fetch(`${API_BASE}/admin/verify`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) return { valid: false };
-    return res.json();
+    try {
+      if (!token || typeof token !== 'string') return { valid: false };
+      const cleanToken = token.trim();
+      const res = await fetch(`${API_BASE}/admin/verify`, {
+        headers: {
+          'Authorization': `Bearer ${cleanToken}`,
+          'Accept': 'application/json'
+        },
+      });
+      if (!res.ok) return { valid: false };
+      return await res.json();
+    } catch {
+      return { valid: false };
+    }
   },
 
   // Company Info

@@ -24,19 +24,26 @@ app.get('/api/health', (_req, res) => {
 
 // --- ADMIN AUTH ---
 app.post('/api/admin/login', async (req, res) => {
-  const emailInput = (req.body.email || '').trim();
-  const passwordInput = (req.body.password || '').trim();
+  try {
+    const emailInput = (req.body.email || '').trim();
+    const passwordInput = (req.body.password || '').trim();
 
-  const authResult = await db.authenticateAdmin(emailInput, passwordInput);
-  if (authResult.success) {
-    const token = `bypatel_auth_${Buffer.from(`${emailInput}:${Date.now()}`).toString('base64')}`;
-    return res.json({
-      success: true,
-      token,
-      user: authResult.user || { email: 'info@bypatel.com', name: 'byPatel Master Admin', role: 'superadmin' }
-    });
+    const authResult = await db.authenticateAdmin(emailInput, passwordInput);
+    if (authResult.success) {
+      const cleanUser = authResult.user || { email: 'info@bypatel.com', name: 'byPatel Master Admin', role: 'superadmin' };
+      const tokenPayload = Buffer.from(`${cleanUser.email}:${Date.now()}`).toString('hex');
+      const token = `bypatel_auth_${tokenPayload}`;
+      return res.json({
+        success: true,
+        token,
+        user: cleanUser
+      });
+    }
+    return res.status(401).json({ error: 'Invalid admin credentials. Please use info@bypatel.com and bypatel_admin_2025' });
+  } catch (err: any) {
+    console.error('Login error:', err);
+    return res.status(500).json({ error: 'Authentication processing error' });
   }
-  return res.status(401).json({ error: 'Invalid admin credentials. Please use info@bypatel.com and bypatel_admin_2025' });
 });
 
 app.get('/api/admin/verify', (req, res) => {
