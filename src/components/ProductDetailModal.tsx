@@ -202,7 +202,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
 
               {/* Architecture Premise */}
               <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/10 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                Spendlytic is engineered on a <strong className="text-zinc-950 dark:text-white">Zero-Knowledge, Sovereign Data paradigm</strong>. Rather than streaming private financial transactions and bank credentials to third-party cloud servers, every computation—from real-time daily safe limit calculations to predictive machine learning forecasting—executes 100% locally on your iPhone.
+                Spendlytic is engineered on a <strong className="text-zinc-950 dark:text-white">Zero-Knowledge, Sovereign Data paradigm</strong>. Rather than streaming private financial transactions and bank credentials to third-party cloud servers, every computation—from real-time daily safe limit calculations to predictive machine learning forecasting—executes 100% locally on-device. Currently launched on iOS, with dedicated native builds for Android and macOS actively in development to extend zero-cloud privacy to all your devices.
               </div>
 
               {/* 4 Architectural Pillars Grid */}
@@ -215,16 +215,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                     </div>
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Pillar 01 • Presentation</div>
-                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">120 FPS Motion Pipeline</h4>
+                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">Multi-Platform Native Pipeline</h4>
                     </div>
                   </div>
                   <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                    Pure SwiftUI with Metal shader acceleration. Physics-based gestural tracking, fluid haptic feedback engine, and dynamic typographic scaling with zero dropped frames.
+                    Engineered with pure SwiftUI and Metal shader acceleration on iOS & macOS, with Kotlin Jetpack Compose for Android. Physics-based gestural tracking, fluid haptic feedback, and dynamic typographic scaling with zero dropped frames.
                   </p>
                   <div className="flex flex-wrap gap-1 pt-1">
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">SwiftUI 6</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Metal Shaders</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">120Hz ProMotion</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">SwiftUI (iOS/macOS)</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Jetpack Compose (Android)</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">120Hz Gestures</span>
                   </div>
                 </div>
 
@@ -236,16 +236,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                     </div>
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">Pillar 02 • Machine Learning</div>
-                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">Neural Intelligence Engine</h4>
+                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">On-Device Neural Intelligence</h4>
                     </div>
                   </div>
                   <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                    Powered by Apple CoreML and Accelerate framework. Local time-series models run on Apple Silicon to compute Daily Safe Spend limits and project 6-month trajectories offline.
+                    Powered by Apple CoreML on iOS/macOS and on-device neural acceleration on Android. Local time-series models run directly on silicon to compute Daily Safe Spend limits and project 6-month trajectories offline with zero cloud latency.
                   </p>
                   <div className="flex flex-wrap gap-1 pt-1">
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Apple CoreML</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">CoreML & On-Device ML</span>
                     <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Neural Engine</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Accelerate FW</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">100% Offline Models</span>
                   </div>
                 </div>
 
@@ -261,12 +261,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                     </div>
                   </div>
                   <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                    Encrypted on-device relational storage guarded by hardware biometrics. Zero external database relays, zero tracking SDKs, and zero telemetry data exfiltration.
+                    Encrypted on-device relational storage guarded by hardware biometrics (Face ID, Touch ID, Android BiometricPrompt). Zero external database relays, zero tracking SDKs, and zero telemetry data exfiltration across iOS, Android, and macOS.
                   </p>
                   <div className="flex flex-wrap gap-1 pt-1">
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Core Data</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Secure Enclave</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Face ID Auth</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Local Encrypted Store</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Secure Enclave / Keystore</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Hardware Biometrics</span>
                   </div>
                 </div>
 
@@ -278,16 +278,16 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                     </div>
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Pillar 04 • Hardware Hooks</div>
-                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">iOS Surface Integration</h4>
+                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">Native OS Surface Integration</h4>
                     </div>
                   </div>
                   <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                    Real-time Dynamic Island updates, Home & Lock Screen widgets, autonomous midnight Auto-Sweep routines, and on-device PDF audit export compilation.
+                    Real-time Dynamic Island updates and WidgetKit on iOS/macOS, glanceable widgets on Android, autonomous midnight Auto-Sweep routines, and on-device PDF audit export compilation.
                   </p>
                   <div className="flex flex-wrap gap-1 pt-1">
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Dynamic Island</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">ActivityKit</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">PDFKit Engine</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Dynamic Island & Widgets</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Android Surface Hooks</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">PDF Engine</span>
                   </div>
                 </div>
               </div>
@@ -318,7 +318,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
                 <h3 className="font-heading text-lg font-bold text-zinc-950 dark:text-white">Technologies & Frameworks</h3>
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">Apple Native Toolchain</span>
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">Multi-Platform Stack</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {product.tech_stack.map((tech, idx) => (
