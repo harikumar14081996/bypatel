@@ -1242,6 +1242,17 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                           className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-black/10 dark:border-white/15 text-xs sm:text-sm text-zinc-950 dark:text-white focus:outline-none"
                         />
                       </div>
+
+                      <div className="space-y-1 md:col-span-2">
+                        <label className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 uppercase">Location / Address</label>
+                        <input
+                          type="text"
+                          value={companyForm.address || ''}
+                          onChange={(e) => setCompanyForm({ ...companyForm, address: e.target.value })}
+                          placeholder="e.g. Oshawa, ON, Canada"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-black/10 dark:border-white/15 text-xs sm:text-sm text-zinc-950 dark:text-white focus:outline-none"
+                        />
+                      </div>
                     </div>
                   </form>
                 )}

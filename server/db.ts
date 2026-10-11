@@ -153,7 +153,7 @@ const initialCompanyInfo: CompanyInfo = {
   ],
   contact_email: 'info@bypatel.com',
   contact_phone: '+1 (415) 890-4321',
-  address: 'San Francisco, CA & Global Remote Operations',
+  address: 'Oshawa, ON, Canada',
   socials: {
     github: 'https://github.com',
     twitter: 'https://twitter.com',

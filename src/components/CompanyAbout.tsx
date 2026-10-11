@@ -58,7 +58,7 @@ export const CompanyAbout: React.FC<CompanyAboutProps> = ({ company }) => {
               </div>
               <div>
                 <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase font-bold">Location</div>
-                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{company?.address || 'San Francisco, CA & Global'}</span>
+                <span className="font-semibold text-zinc-900 dark:text-zinc-100">{company?.address || 'Oshawa, ON, Canada'}</span>
               </div>
             </div>
           </div>

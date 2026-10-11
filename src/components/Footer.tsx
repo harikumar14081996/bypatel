@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUp, ShieldCheck, FileText, Sparkles, Sun, Moon, Mail } from 'lucide-react';
+import { ArrowUp, ShieldCheck, FileText, Sparkles, Sun, Moon, Mail, MapPin } from 'lucide-react';
 import { CompanyInfo } from '../types';
 import { useTheme } from '../context/ThemeContext';
 
@@ -56,7 +56,7 @@ export const Footer: React.FC<FooterProps> = ({
               {company?.tagline || 'Engineering Digital Masterpieces & High-Performance Software.'}
             </p>
 
-            <div className="pt-1">
+            <div className="pt-1 flex flex-col sm:flex-row sm:items-center gap-3">
               <a
                 href={`mailto:${contactEmail}`}
                 className="inline-flex items-center gap-2 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
@@ -64,6 +64,10 @@ export const Footer: React.FC<FooterProps> = ({
                 <Mail className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                 <span>{contactEmail}</span>
               </a>
+              <div className="inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+                <MapPin className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                <span>{company?.address || 'Oshawa, ON, Canada'}</span>
+              </div>
             </div>
 
             <div className="flex items-center gap-3 pt-1">
