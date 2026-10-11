@@ -142,60 +142,37 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
               </div>
             </div>
 
-            {/* Screenshots & Media Showcase */}
+            {/* Screenshots & Media Showcase - Native App Store Ribbon */}
             {product.screenshots && product.screenshots.length > 0 && (
               <div className="space-y-3">
-                <h3 className="font-heading text-lg font-bold text-zinc-950 dark:text-white flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                  <span>Visual Showcase & Views</span>
-                </h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-heading text-lg font-bold text-zinc-950 dark:text-white flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                    <span>App Store Previews & Live Screenshots</span>
+                  </h3>
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    {product.screenshots.length} Retina Previews
+                  </span>
+                </div>
 
-                <div className="relative rounded-2xl overflow-hidden bg-zinc-100 dark:bg-black/40 border border-black/10 dark:border-white/10 aspect-[16/9] max-h-[380px]">
-                  <img
-                    src={product.screenshots[activeScreenshotIdx] || product.mockup_url}
-                    alt={`${product.title} screenshot`}
-                    className="w-full h-full object-cover object-center transition-all duration-500"
-                  />
-
-                  {product.screenshots.length > 1 && (
-                    <div className="absolute inset-0 flex items-center justify-between p-4 pointer-events-none">
-                      <button
-                        onClick={() =>
-                          setActiveScreenshotIdx((prev) =>
-                            prev === 0 ? product.screenshots.length - 1 : prev - 1
-                          )
-                        }
-                        className="p-2 rounded-full bg-white/80 dark:bg-black/60 backdrop-blur-md text-zinc-900 dark:text-white pointer-events-auto border border-black/10 dark:border-white/20 shadow-md cursor-pointer transition-all"
-                      >
-                        <ChevronLeft className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() =>
-                          setActiveScreenshotIdx((prev) =>
-                            prev === product.screenshots.length - 1 ? 0 : prev + 1
-                          )
-                        }
-                        className="p-2 rounded-full bg-white/80 dark:bg-black/60 backdrop-blur-md text-zinc-900 dark:text-white pointer-events-auto border border-black/10 dark:border-white/20 shadow-md cursor-pointer transition-all"
-                      >
-                        <ChevronRight className="w-5 h-5" />
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Screenshot Indicator Dots */}
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-white/80 dark:bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-black/10 dark:border-white/10">
-                    {product.screenshots.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setActiveScreenshotIdx(i)}
-                        className={`w-2 h-2 rounded-full transition-all ${
-                          activeScreenshotIdx === i
-                            ? 'bg-indigo-600 dark:bg-indigo-400 w-5'
-                            : 'bg-zinc-400 dark:bg-white/40'
-                        }`}
+                <div className="flex gap-4 overflow-x-auto pb-4 pt-2 snap-x scroll-smooth rounded-2xl">
+                  {product.screenshots.map((screenshotUrl, i) => (
+                    <motion.div
+                      key={i}
+                      whileHover={{ scale: 1.02, y: -4 }}
+                      transition={{ duration: 0.2 }}
+                      className="shrink-0 snap-center rounded-2xl overflow-hidden border border-black/10 dark:border-white/15 shadow-xl bg-zinc-900 w-[220px] sm:w-[260px] aspect-[9/16] relative cursor-pointer group"
+                      onClick={() => setActiveScreenshotIdx(i)}
+                    >
+                      <img
+                        src={screenshotUrl}
+                        alt={`${product.title} screen ${i + 1}`}
+                        className="w-full h-full object-cover object-top"
+                        loading="lazy"
                       />
-                    ))}
-                  </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             )}

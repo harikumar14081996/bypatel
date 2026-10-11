@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ProductGallery } from './components/ProductGallery';
-import { ProductDetailModal } from './components/ProductDetailModal';
 import { ServicesSection } from './components/ServicesSection';
 import { CompanyAbout } from './components/CompanyAbout';
-import { CareersPage } from './components/CareersPage';
 import { HireUsSection } from './components/HireUsSection';
-import { LegalModal } from './components/LegalModal';
-import { AdminPortal } from './components/AdminPortal';
 import { Footer } from './components/Footer';
 import { api } from './api/client';
 import { Product } from './types';
 import { useTheme } from './context/ThemeContext';
+
+// Code-split heavy modals and views
+const CareersPage = lazy(() => import('./components/CareersPage').then(m => ({ default: m.CareersPage })));
+const ProductDetailModal = lazy(() => import('./components/ProductDetailModal').then(m => ({ default: m.ProductDetailModal })));
+const LegalModal = lazy(() => import('./components/LegalModal').then(m => ({ default: m.LegalModal })));
+const AdminPortal = lazy(() => import('./components/AdminPortal').then(m => ({ default: m.AdminPortal })));
 
 export const App: React.FC = () => {
   const queryClient = useQueryClient();
@@ -106,11 +108,12 @@ export const App: React.FC = () => {
     staleTime: 1000 * 60 * 5,
   });
 
-  // Fetch Jobs
+  // Fetch Jobs (Loaded only when user navigates to careers or admin portal)
   const { data: jobs = [], isLoading: loadingJobs, refetch: refetchJobs } = useQuery({
     queryKey: ['jobs'],
     queryFn: () => api.getJobs(false),
-    staleTime: 1000 * 60,
+    enabled: currentPage === 'careers' || isAdminPortalOpen,
+    staleTime: 1000 * 60 * 5,
   });
 
   // Toggle Visibility Mutation
@@ -174,13 +177,15 @@ export const App: React.FC = () => {
           </p>
         </div>
       ) : currentPage === 'careers' ? (
-        /* Dedicated Careers Page View */
+        /* Dedicated Careers Page View (Lazy Loaded) */
         <main>
-          <CareersPage
-            jobs={jobs}
-            onRefreshJobs={refetchJobs}
-            onBackToHome={() => handleNavigate('home')}
-          />
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-zinc-500 text-xs">Loading Careers...</div>}>
+            <CareersPage
+              jobs={jobs}
+              onRefreshJobs={refetchJobs}
+              onBackToHome={() => handleNavigate('home')}
+            />
+          </Suspense>
         </main>
       ) : (
         /* Home Studio & Product Showcase View */
@@ -218,26 +223,33 @@ export const App: React.FC = () => {
         onOpenAdmin={handleOpenAdmin}
       />
 
-      {/* Modals & Portals */}
-      <ProductDetailModal
-        product={selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-      />
+      {/* Modals & Portals (Lazy Loaded on Demand) */}
+      <Suspense fallback={null}>
+        {selectedProduct && (
+          <ProductDetailModal
+            product={selectedProduct}
+            onClose={() => setSelectedProduct(null)}
+          />
+        )}
 
-      <LegalModal
-        slug={selectedLegalSlug}
-        onClose={() => setSelectedLegalSlug(null)}
-      />
+        {selectedLegalSlug && (
+          <LegalModal
+            slug={selectedLegalSlug}
+            onClose={() => setSelectedLegalSlug(null)}
+          />
+        )}
 
-      {/* Full Admin Login & CMS Management Portal */}
-      <AdminPortal
-        isOpen={isAdminPortalOpen}
-        onClose={handleCloseAdmin}
-        products={products}
-        company={company || null}
-        services={services}
-        onDataChanged={handleDataChanged}
-      />
+        {isAdminPortalOpen && (
+          <AdminPortal
+            isOpen={isAdminPortalOpen}
+            onClose={handleCloseAdmin}
+            products={products}
+            company={company || null}
+            services={services}
+            onDataChanged={handleDataChanged}
+          />
+        )}
+      </Suspense>
     </div>
   );
 };

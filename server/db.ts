@@ -166,92 +166,49 @@ const initialCompanyInfo: CompanyInfo = {
 
 const initialProducts: Product[] = [
   {
-    id: 'pulseflow-mindfulness',
-    title: 'PulseFlow',
-    subtitle: 'Spatial Bio-Rhythm & Mindfulness Engine',
+    id: 'spendlytic',
+    title: 'Spendlytic',
+    subtitle: 'Daily Budget & Habit Tracker',
     category: 'Mobile App',
-    description: 'An Apple Design Award nominee featuring generative spatial soundscapes, real-time HRV biofeedback, and fluid gestural micro-interactions.',
-    long_description: 'PulseFlow redefines daily mindfulness through cutting-edge spatial audio synthesis and native biometric synchronization. Designed exclusively with native Swift on iOS and Jetpack Compose on Android, it delivers instantaneous responsiveness, zero-battery-drain background tracking, and rich interactive widget architectures.',
-    icon_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=256&auto=format&fit=crop&q=80',
-    mockup_url: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1000&auto=format&fit=crop&q=80',
-    banner_url: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?w=1400&auto=format&fit=crop&q=80',
+    description: 'Take back control of your finances without sacrificing your privacy. Spendlytic is the premium, on-device budget tracker that tells you exactly how much you can safely spend today.',
+    long_description: 'Finance is complex, but understanding your daily limit shouldn\'t be. Spendlytic distills your entire financial life - income, recurring bills, and savings goals into a single, honest number. Unlike other financial apps, Spendlytic operates entirely on your iPhone. There are no accounts to create, no bank logins to sync, and zero cloud servers. Your personal data is locked securely on your device and protected by Face ID.\n\nPOWERFUL FEATURES:\n- The Daily Safe Spend: Instantly know exactly how much you can spend today without breaking your budget or missing an upcoming bill.\n- Habit Correlation: Connect your daily habits to your spending. See how small lifestyle choices impact your overall financial health.\n- Auto-Sweep Savings: Turn on Auto-Sweep and Spendlytic will automatically detect any money left in your daily budget at midnight and sweep it into a dedicated Savings Goal. Grow your wealth automatically!\n- On-Device AI Forecasting: Spendlytic uses Apple\'s native Machine Learning to analyze your spending trends and forecast your 6-month financial trajectory - all computed locally on your processor.\n- Best-In-Class Auditing & Exports: Generate premium, multi-page PDF reports and detailed CSV ledgers. Perfect for tax season, accountants, or personal archiving.\n- Dynamic Island & Live Activities: See real-time spending tracking and remaining daily budget at a glance without even opening the app.\n- Home & Lock Screen Widgets: Keep an eye on your Daily Safe Spend and streaks right from your Home Screen or Lock Screen!\n- Biometric Security: Lock your financial vault with Face ID, Touch ID, or a secure Passcode.\n\nPRIVACY BY DESIGN:\n- No Cloud Servers or external databases.\n- No Third-Party Analytics, AD SDKs, or tracking.\n- 100% On-Device Storage using Apple Core Data.\n- 100% On-Device Computation using Apple Accelerate.\n- No Registration or email required.',
+    icon_url: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/38/89/2b/38892ba0-d6df-0438-1284-c846b22432af/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg',
+    mockup_url: 'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/dc/ff/97/dcff976a-f41b-0ac8-ee51-72f1dacf8346/ios_1_1.png/640x1136bb.jpg',
+    banner_url: 'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/dc/ff/97/dcff976a-f41b-0ac8-ee51-72f1dacf8346/ios_1_1.png/640x1136bb.jpg',
     screenshots: [
-      'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1616469829941-c7200edec809?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&auto=format&fit=crop&q=80'
+      'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/dc/ff/97/dcff976a-f41b-0ac8-ee51-72f1dacf8346/ios_1_1.png/640x1136bb.jpg',
+      'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/30/60/52/30605230-032e-5ed2-5a9f-891c33a99c1f/ios_1_2.png/640x1136bb.jpg',
+      'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/a8/7a/8d/a87a8d9b-dae5-92be-c6f3-fb4cb24832e7/ios_1_3.png/640x1136bb.jpg',
+      'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/30/42/ad/3042ad07-4d37-c04d-307e-145944b883fa/ios_1_5.png/640x1136bb.jpg',
+      'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/4b/73/de/4b73de46-e34c-de80-795b-d61d3e43036f/ios_1_4.png/640x1136bb.jpg',
+      'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/10/7b/c5/107bc5ed-1aad-cdcb-7edd-d8a3f14e5ef6/ios_1_10.png/640x1136bb.jpg',
+      'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/56/ae/bb/56aebbb5-16a4-0f5d-5931-c8a4d14066e4/ios_1_6.png/640x1136bb.jpg',
+      'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/41/c7/54/41c754ec-2f9b-12a0-9ca2-6cb08c958a58/ios_1_8.png/640x1136bb.jpg',
+      'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/2b/96/94/2b9694ee-fe71-3ec0-9af1-9e694ce01a3d/ios_1_7.png/640x1136bb.jpg'
     ],
     feature_list: [
-      'Generative procedural sound engine crafted with WebAudio and native CoreAudio',
-      'On-device machine learning for personalized circadian habit predictions',
-      'Fluid gestural spring physics utilizing 120 FPS ProMotion displays',
-      'Zero-cloud biometric storage with end-to-end local hardware encryption'
+      'The Daily Safe Spend: Instantly know exactly how much you can spend today without breaking your budget',
+      'Habit Correlation: Connect your daily habits to spending to see how small choices impact wealth',
+      'Auto-Sweep Savings: Unspent daily budget automatically sweeps at midnight into dedicated Savings Goals',
+      'On-Device Machine Learning: Apple CoreML forecasts 6-month financial trajectory locally',
+      '100% Privacy by Design: Zero cloud servers, zero tracking, locked with Face ID & Apple Core Data',
+      'Live Activities & Dynamic Island: Real-time spending on Dynamic Island, Lock Screen, and Home Screen'
     ],
-    tech_stack: ['Swift / SwiftUI', 'Kotlin / Jetpack Compose', 'Rust Audio Core', 'CoreML', 'HealthKit'],
-    play_store_url: 'https://play.google.com/store/apps/details?id=com.bypatel.pulseflow',
-    app_store_url: 'https://apps.apple.com/app/pulseflow-mindfulness/id1658823120',
-    rating: 4.95,
-    total_downloads: '500K+',
-    release_date: 'Fall 2024',
+    tech_stack: [
+      'Swift / SwiftUI',
+      'Apple Core Data',
+      'Face ID / LocalAuthentication',
+      'WidgetKit & Live Activities',
+      'CoreML On-Device AI',
+      'Zero Cloud Privacy'
+    ],
+    app_store_url: 'https://apps.apple.com/in/app/spendlytic/id6759431035',
+    rating: 5.0,
+    total_downloads: 'Live on App Store',
+    release_date: 'v1.2 Released',
     is_featured: true,
     is_visible: true,
     display_order: 1
-  },
-  {
-    id: 'chronoshift-odyssey',
-    title: 'ChronoShift: Odyssey',
-    subtitle: 'Temporal Mechanics Physics Puzzle-Platformer',
-    category: 'Game',
-    description: 'A 2.5D atmospheric puzzle platformer manipulating localized gravity and temporal rewind mechanics built with custom C++ physics.',
-    long_description: 'ChronoShift combines cinematic environmental storytelling with deterministic physics simulation. Players control localized causality bubbles to solve intricate spatial dilemmas across fractured temporal dimensions.',
-    icon_url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=256&auto=format&fit=crop&q=80',
-    mockup_url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1000&auto=format&fit=crop&q=80',
-    banner_url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1400&auto=format&fit=crop&q=80',
-    screenshots: [
-      'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80'
-    ],
-    feature_list: [
-      'Custom deterministic rollback physics simulation running at 240 Hz fixed tick',
-      'Dynamic volumetric lighting and screen-space temporal refractions',
-      'Full cross-platform controller support and haptic trigger response'
-    ],
-    tech_stack: ['Unreal Engine 5', 'C++', 'Metal / Vulkan', 'FMOD Studio', 'HLSL Shaders'],
-    play_store_url: 'https://play.google.com/store/apps/details?id=com.bypatel.chronoshift',
-    app_store_url: 'https://apps.apple.com/app/chronoshift-odyssey/id1658992019',
-    rating: 4.88,
-    total_downloads: '1.2M+',
-    release_date: 'Summer 2024',
-    is_featured: true,
-    is_visible: true,
-    display_order: 2
-  },
-  {
-    id: 'aetheria-cloud-canvas',
-    title: 'Aetheria Studio',
-    subtitle: 'Infinite Collaborative Spatial Canvas',
-    category: 'Web Platform',
-    description: 'An ultra-fast collaborative infinite-canvas tool for product teams, bridging high-speed WebGL rendering with real-time multiplayer CRDTs.',
-    long_description: 'Aetheria Studio allows distributed engineering and product design teams to whiteboard, architect schemas, and execute live code simulations in a unified 3D-accelerated viewport. Built on Rust-compiled WebAssembly and WebGPU for lightning-quick 120 FPS pan-and-zoom performance.',
-    icon_url: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=256&auto=format&fit=crop&q=80',
-    mockup_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&auto=format&fit=crop&q=80',
-    banner_url: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1400&auto=format&fit=crop&q=80',
-    screenshots: [
-      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&auto=format&fit=crop&q=80'
-    ],
-    feature_list: [
-      'WebGPU & Rust Wasm rendering engine handling 100,000+ objects without lag',
-      'Conflict-free Replicated Data Types (Yjs CRDT) for sub-5ms collaboration sync',
-      'Integrated AI copilot for architectural diagramming and prompt-to-code synthesis'
-    ],
-    tech_stack: ['React', 'TypeScript', 'WebGPU / Wasm', 'Rust', 'Node.js', 'Redis', 'PostgreSQL'],
-    web_url: 'https://aetheria.bypatel.io',
-    rating: 4.96,
-    total_downloads: '150K+ Teams',
-    release_date: 'Spring 2024',
-    is_featured: true,
-    is_visible: true,
-    display_order: 3
   }
 ];
 

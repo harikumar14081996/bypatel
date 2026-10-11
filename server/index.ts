@@ -17,6 +17,34 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'bypatel_admin_2025';
 app.use(cors());
 app.use(express.json());
 
+// Fast In-Memory Cache with TTL & automatic invalidation
+const memCache = new Map<string, { data: any; expiry: number }>();
+
+function getCached<T>(key: string): T | null {
+  const item = memCache.get(key);
+  if (item && item.expiry > Date.now()) {
+    return item.data as T;
+  }
+  memCache.delete(key);
+  return null;
+}
+
+function setCached(key: string, data: any, ttlSeconds = 60) {
+  memCache.set(key, { data, expiry: Date.now() + ttlSeconds * 1000 });
+}
+
+function invalidateCache(...prefixes: string[]) {
+  if (prefixes.length === 0) {
+    memCache.clear();
+    return;
+  }
+  for (const key of memCache.keys()) {
+    if (prefixes.some((p) => key.startsWith(p))) {
+      memCache.delete(key);
+    }
+  }
+}
+
 // Health Check
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', service: 'byPatel Core API', timestamp: new Date().toISOString() });
@@ -57,8 +85,15 @@ app.get('/api/admin/verify', (req, res) => {
 // --- COMPANY INFO ---
 app.get('/api/company', async (_req, res) => {
   try {
+    const cached = getCached('company');
+    if (cached) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
+      return res.json(cached);
+    }
     const info = await db.getCompanyInfo();
     if (!info) return res.status(404).json({ error: 'Company info not found' });
+    setCached('company', info, 60);
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
     res.json(info);
   } catch (err: any) {
     console.error('Error fetching company info:', err);
@@ -69,6 +104,7 @@ app.get('/api/company', async (_req, res) => {
 app.put('/api/company', async (req, res) => {
   try {
     const updated = await db.updateCompanyInfo(req.body);
+    invalidateCache('company');
     res.json({ success: true, company: updated });
   } catch (err: any) {
     console.error('Error updating company info:', err);
@@ -80,7 +116,15 @@ app.put('/api/company', async (req, res) => {
 app.get('/api/products', async (req, res) => {
   try {
     const includeHidden = req.query.all === 'true' || req.query.admin === 'true';
+    const cacheKey = `products_${includeHidden}`;
+    const cached = getCached(cacheKey);
+    if (cached) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
+      return res.json(cached);
+    }
     const products = await db.getProducts(includeHidden);
+    setCached(cacheKey, products, 60);
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
     res.json(products);
   } catch (err: any) {
     console.error('Error fetching products:', err);
@@ -90,8 +134,16 @@ app.get('/api/products', async (req, res) => {
 
 app.get('/api/products/:id', async (req, res) => {
   try {
+    const cacheKey = `product_${req.params.id}`;
+    const cached = getCached(cacheKey);
+    if (cached) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
+      return res.json(cached);
+    }
     const product = await db.getProductById(req.params.id);
     if (!product) return res.status(404).json({ error: 'Product not found' });
+    setCached(cacheKey, product, 60);
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
     res.json(product);
   } catch (err: any) {
     console.error('Error fetching product:', err);
@@ -102,6 +154,7 @@ app.get('/api/products/:id', async (req, res) => {
 app.post('/api/products', async (req, res) => {
   try {
     const created = await db.createProduct(req.body);
+    invalidateCache('products');
     res.status(201).json({ success: true, product: created });
   } catch (err: any) {
     console.error('Error creating product:', err);
@@ -113,6 +166,7 @@ app.put('/api/products/:id', async (req, res) => {
   try {
     const updated = await db.updateProduct(req.params.id, req.body);
     if (!updated) return res.status(404).json({ error: 'Product not found' });
+    invalidateCache('products', `product_${req.params.id}`);
     res.json({ success: true, product: updated });
   } catch (err: any) {
     console.error('Error updating product:', err);
@@ -124,6 +178,7 @@ app.delete('/api/products/:id', async (req, res) => {
   try {
     const success = await db.deleteProduct(req.params.id);
     if (!success) return res.status(404).json({ error: 'Product not found or delete failed' });
+    invalidateCache('products', `product_${req.params.id}`);
     res.json({ success: true, id: req.params.id });
   } catch (err: any) {
     console.error('Error deleting product:', err);
@@ -140,6 +195,7 @@ app.patch('/api/products/:id/visibility', async (req, res) => {
     }
     const success = await db.toggleProductVisibility(req.params.id, is_visible);
     if (!success) return res.status(404).json({ error: 'Product not found or update failed' });
+    invalidateCache('products', `product_${req.params.id}`);
     res.json({ success: true, id: req.params.id, is_visible });
   } catch (err: any) {
     console.error('Error toggling visibility:', err);
@@ -150,7 +206,14 @@ app.patch('/api/products/:id/visibility', async (req, res) => {
 // --- SERVICES ---
 app.get('/api/services', async (_req, res) => {
   try {
+    const cached = getCached('services');
+    if (cached) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
+      return res.json(cached);
+    }
     const services = await db.getServices();
+    setCached('services', services, 60);
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
     res.json(services);
   } catch (err: any) {
     console.error('Error fetching services:', err);
@@ -161,6 +224,7 @@ app.get('/api/services', async (_req, res) => {
 app.post('/api/services', async (req, res) => {
   try {
     const created = await db.createService(req.body);
+    invalidateCache('services');
     res.status(201).json({ success: true, service: created });
   } catch (err: any) {
     console.error('Error creating service:', err);
@@ -172,6 +236,7 @@ app.put('/api/services/:id', async (req, res) => {
   try {
     const updated = await db.updateService(req.params.id, req.body);
     if (!updated) return res.status(404).json({ error: 'Service not found' });
+    invalidateCache('services');
     res.json({ success: true, service: updated });
   } catch (err: any) {
     console.error('Error updating service:', err);
@@ -183,6 +248,7 @@ app.delete('/api/services/:id', async (req, res) => {
   try {
     const success = await db.deleteService(req.params.id);
     if (!success) return res.status(404).json({ error: 'Service not found' });
+    invalidateCache('services');
     res.json({ success: true, id: req.params.id });
   } catch (err: any) {
     console.error('Error deleting service:', err);
@@ -193,7 +259,14 @@ app.delete('/api/services/:id', async (req, res) => {
 // --- LEGAL PAGES ---
 app.get('/api/legal', async (_req, res) => {
   try {
+    const cached = getCached('legal_all');
+    if (cached) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
+      return res.json(cached);
+    }
     const pages = await db.getLegalPages();
+    setCached('legal_all', pages, 60);
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
     res.json(pages);
   } catch (err: any) {
     console.error('Error fetching legal pages:', err);
@@ -203,8 +276,16 @@ app.get('/api/legal', async (_req, res) => {
 
 app.get('/api/legal/:slug', async (req, res) => {
   try {
+    const cacheKey = `legal_${req.params.slug}`;
+    const cached = getCached(cacheKey);
+    if (cached) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
+      return res.json(cached);
+    }
     const page = await db.getLegalPage(req.params.slug);
     if (!page) return res.status(404).json({ error: 'Legal document not found' });
+    setCached(cacheKey, page, 60);
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
     res.json(page);
   } catch (err: any) {
     console.error('Error fetching legal document:', err);
@@ -216,6 +297,7 @@ app.put('/api/legal/:slug', async (req, res) => {
   try {
     const updated = await db.updateLegalPage(req.params.slug, req.body);
     if (!updated) return res.status(404).json({ error: 'Legal document not found' });
+    invalidateCache('legal');
     res.json({ success: true, page: updated });
   } catch (err: any) {
     console.error('Error updating legal page:', err);
@@ -286,7 +368,15 @@ app.delete('/api/leads/:id', async (req, res) => {
 app.get('/api/jobs', async (req, res) => {
   try {
     const includeInactive = req.query.all === 'true' || req.query.admin === 'true';
+    const cacheKey = `jobs_${includeInactive}`;
+    const cached = getCached(cacheKey);
+    if (cached) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
+      return res.json(cached);
+    }
     const jobs = await db.getJobPostings(includeInactive);
+    setCached(cacheKey, jobs, 60);
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
     res.json(jobs);
   } catch (err: any) {
     console.error('Error fetching jobs:', err);
@@ -296,8 +386,16 @@ app.get('/api/jobs', async (req, res) => {
 
 app.get('/api/jobs/:id', async (req, res) => {
   try {
+    const cacheKey = `job_${req.params.id}`;
+    const cached = getCached(cacheKey);
+    if (cached) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
+      return res.json(cached);
+    }
     const job = await db.getJobPostingById(req.params.id);
     if (!job) return res.status(404).json({ error: 'Job posting not found' });
+    setCached(cacheKey, job, 60);
+    res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
     res.json(job);
   } catch (err: any) {
     console.error('Error fetching job:', err);
@@ -308,6 +406,7 @@ app.get('/api/jobs/:id', async (req, res) => {
 app.post('/api/jobs', async (req, res) => {
   try {
     const created = await db.createJobPosting(req.body);
+    invalidateCache('jobs');
     res.status(201).json({ success: true, job: created });
   } catch (err: any) {
     console.error('Error creating job:', err);
@@ -319,6 +418,7 @@ app.put('/api/jobs/:id', async (req, res) => {
   try {
     const updated = await db.updateJobPosting(req.params.id, req.body);
     if (!updated) return res.status(404).json({ error: 'Job posting not found' });
+    invalidateCache('jobs', `job_${req.params.id}`);
     res.json({ success: true, job: updated });
   } catch (err: any) {
     console.error('Error updating job:', err);
@@ -330,6 +430,7 @@ app.delete('/api/jobs/:id', async (req, res) => {
   try {
     const success = await db.deleteJobPosting(req.params.id);
     if (!success) return res.status(404).json({ error: 'Job posting not found' });
+    invalidateCache('jobs', `job_${req.params.id}`);
     res.json({ success: true, id: req.params.id });
   } catch (err: any) {
     console.error('Error deleting job:', err);
