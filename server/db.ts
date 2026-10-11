@@ -170,8 +170,8 @@ const initialProducts: Product[] = [
     title: 'Spendlytic',
     subtitle: 'Daily Budget & Habit Tracker',
     category: 'Mobile App',
-    description: 'Take back control of your finances without sacrificing your privacy. Spendlytic is the premium, on-device budget tracker that tells you exactly how much you can safely spend today.',
-    long_description: 'Finance is complex, but understanding your daily limit shouldn\'t be. Spendlytic distills your entire financial life - income, recurring bills, and savings goals into a single, honest number. Unlike other financial apps, Spendlytic operates entirely on your iPhone. There are no accounts to create, no bank logins to sync, and zero cloud servers. Your personal data is locked securely on your device and protected by Face ID.\n\nPOWERFUL FEATURES:\n- The Daily Safe Spend: Instantly know exactly how much you can spend today without breaking your budget or missing an upcoming bill.\n- Habit Correlation: Connect your daily habits to your spending. See how small lifestyle choices impact your overall financial health.\n- Auto-Sweep Savings: Turn on Auto-Sweep and Spendlytic will automatically detect any money left in your daily budget at midnight and sweep it into a dedicated Savings Goal. Grow your wealth automatically!\n- On-Device AI Forecasting: Spendlytic uses Apple\'s native Machine Learning to analyze your spending trends and forecast your 6-month financial trajectory - all computed locally on your processor.\n- Best-In-Class Auditing & Exports: Generate premium, multi-page PDF reports and detailed CSV ledgers. Perfect for tax season, accountants, or personal archiving.\n- Dynamic Island & Live Activities: See real-time spending tracking and remaining daily budget at a glance without even opening the app.\n- Home & Lock Screen Widgets: Keep an eye on your Daily Safe Spend and streaks right from your Home Screen or Lock Screen!\n- Biometric Security: Lock your financial vault with Face ID, Touch ID, or a secure Passcode.\n\nPRIVACY BY DESIGN:\n- No Cloud Servers or external databases.\n- No Third-Party Analytics, AD SDKs, or tracking.\n- 100% On-Device Storage using Apple Core Data.\n- 100% On-Device Computation using Apple Accelerate.\n- No Registration or email required.',
+    description: 'Zero-cloud daily budgeting engineered exclusively for iOS. Computes your exact daily safe spend, projects 6-month wealth trajectories, and guarantees 100% on-device privacy.',
+    long_description: 'Spendlytic is engineered on a Zero-Knowledge, Sovereign Data paradigm. Rather than streaming private financial transactions and bank credentials to third-party cloud servers, every computation—from real-time daily safe limit calculations to predictive machine learning forecasting—executes 100% locally on your iPhone.\n\nSYSTEM ARCHITECTURE & DESIGN:\n- Presentation & Motion Pipeline: Built with pure SwiftUI and Metal shader acceleration for buttery-smooth 120 FPS gestural interaction, fluid haptic feedback, and dynamic typographic scaling.\n- On-Device Intelligence Engine: Powered by Apple CoreML and the Accelerate framework to run predictive time-series models directly on the Apple Neural Engine, forecasting your 6-month financial trajectory without network access.\n- Zero-Cloud Persistence Vault: Relational on-device persistence managed via Apple Core Data with hardware-backed biometric security (Face ID & Touch ID). Zero server relays, zero tracking SDKs, and zero telemetry.\n- iOS Hardware & Surface Integration: Live Activities and Dynamic Island track remaining daily budget in real time; WidgetKit timeline providers deliver Home & Lock screen glances; and on-device PDFKit generates audit-ready financial ledgers.',
     icon_url: 'https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/38/89/2b/38892ba0-d6df-0438-1284-c846b22432af/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg',
     mockup_url: 'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/dc/ff/97/dcff976a-f41b-0ac8-ee51-72f1dacf8346/ios_1_1.png/640x1136bb.jpg',
     banner_url: 'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/dc/ff/97/dcff976a-f41b-0ac8-ee51-72f1dacf8346/ios_1_1.png/640x1136bb.jpg',
@@ -187,20 +187,20 @@ const initialProducts: Product[] = [
       'https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/2b/96/94/2b9694ee-fe71-3ec0-9af1-9e694ce01a3d/ios_1_7.png/640x1136bb.jpg'
     ],
     feature_list: [
-      'The Daily Safe Spend: Instantly know exactly how much you can spend today without breaking your budget',
-      'Habit Correlation: Connect your daily habits to spending to see how small choices impact wealth',
-      'Auto-Sweep Savings: Unspent daily budget automatically sweeps at midnight into dedicated Savings Goals',
-      'On-Device Machine Learning: Apple CoreML forecasts 6-month financial trajectory locally',
-      '100% Privacy by Design: Zero cloud servers, zero tracking, locked with Face ID & Apple Core Data',
-      'Live Activities & Dynamic Island: Real-time spending on Dynamic Island, Lock Screen, and Home Screen'
+      'Daily Safe Spend Engine: Real-time algorithm calculates your exact daily discretionary limit to prevent debt',
+      'Zero-Cloud Privacy Vault: 100% on-device Core Data storage secured with Face ID & biometric encryption',
+      'CoreML Trajectory Forecasting: Apple Neural Engine predicts 6-month cash flow trajectories fully offline',
+      'Midnight Auto-Sweep Savings: Automatically sweeps unspent daily budget at midnight into wealth targets',
+      'Dynamic Island & Live Activities: Real-time ambient spending status visible across iOS lock & home screens',
+      'Auditor-Grade Local Exports: Compiles multi-page PDF statements and detailed CSV ledgers with zero network exfiltration'
     ],
     tech_stack: [
-      'Swift / SwiftUI',
-      'Apple Core Data',
-      'Face ID / LocalAuthentication',
-      'WidgetKit & Live Activities',
-      'CoreML On-Device AI',
-      'Zero Cloud Privacy'
+      'SwiftUI 6 (120 FPS)',
+      'Apple CoreML & Neural Engine',
+      'Apple Core Data Vault',
+      'Face ID / Secure Enclave',
+      'ActivityKit & Dynamic Island',
+      'WidgetKit & PDFKit Engine'
     ],
     app_store_url: 'https://apps.apple.com/in/app/spendlytic/id6759431035',
     rating: 5.0,

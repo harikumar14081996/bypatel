@@ -13,6 +13,9 @@ import {
   ShieldCheck,
   CheckCircle2,
   Layers,
+  Cpu,
+  Zap,
+  Lock,
 } from 'lucide-react';
 import { Product } from '../types';
 
@@ -227,6 +230,103 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({
                       </div>
                     </motion.div>
                   ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Architecture & Engineering Foundations */}
+          <div className="mt-10 pt-8 border-t border-black/[0.06] dark:border-white/10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+              <div>
+                <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>System Architecture & Engineering Specification</span>
+                </div>
+                <h4 className="font-heading text-xl font-bold text-zinc-950 dark:text-white">
+                  Zero-Cloud Native Engineering Stack
+                </h4>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  100% On-Device
+                </span>
+                <button
+                  onClick={() => onSelectProduct(singleProduct)}
+                  className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <span>Full Tech Specs</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Pillar 1 */}
+              <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] space-y-2 hover:border-indigo-500/30 transition-colors">
+                <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+                  <Zap className="w-4 h-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Pillar 01 • Presentation</span>
+                </div>
+                <div className="font-heading text-sm font-bold text-zinc-950 dark:text-white">
+                  120 FPS Motion Pipeline
+                </div>
+                <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                  SwiftUI 6 & Metal shaders deliver fluid gestural physics, haptic pacing, and zero dropped frames.
+                </p>
+                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono font-medium pt-1">
+                  SwiftUI • Metal • ProMotion
+                </div>
+              </div>
+
+              {/* Pillar 2 */}
+              <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] space-y-2 hover:border-cyan-500/30 transition-colors">
+                <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
+                  <Cpu className="w-4 h-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Pillar 02 • Intelligence</span>
+                </div>
+                <div className="font-heading text-sm font-bold text-zinc-950 dark:text-white">
+                  On-Device CoreML Engine
+                </div>
+                <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                  Local neural time-series calculations compute Daily Safe Spend and project 6-month wealth trajectories offline.
+                </p>
+                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono font-medium pt-1">
+                  Apple CoreML • Accelerate FW
+                </div>
+              </div>
+
+              {/* Pillar 3 */}
+              <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] space-y-2 hover:border-emerald-500/30 transition-colors">
+                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Pillar 03 • Security</span>
+                </div>
+                <div className="font-heading text-sm font-bold text-zinc-950 dark:text-white">
+                  Zero-Cloud Persistence Vault
+                </div>
+                <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                  Encrypted local Core Data storage gated by Face ID & Secure Enclave. Zero cloud relays, zero tracking SDKs.
+                </p>
+                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono font-medium pt-1">
+                  Core Data • Secure Enclave • Face ID
+                </div>
+              </div>
+
+              {/* Pillar 4 */}
+              <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] space-y-2 hover:border-amber-500/30 transition-colors">
+                <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                  <Smartphone className="w-4 h-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Pillar 04 • Hardware</span>
+                </div>
+                <div className="font-heading text-sm font-bold text-zinc-950 dark:text-white">
+                  iOS Surface Integration
+                </div>
+                <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                  Live Activities, Dynamic Island real-time budgets, midnight Auto-Sweep savings, and PDF audit exports.
+                </p>
+                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono font-medium pt-1">
+                  Dynamic Island • ActivityKit • WidgetKit
                 </div>
               </div>
             </div>

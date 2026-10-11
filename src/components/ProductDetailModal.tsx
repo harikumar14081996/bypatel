@@ -12,6 +12,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Share2,
+  Cpu,
+  Lock,
+  Zap,
+  Smartphone,
+  ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import { Product } from '../types';
 
@@ -177,25 +183,130 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
               </div>
             )}
 
-            {/* Detailed Architecture & Narrative */}
-            <div className="space-y-3">
-              <h3 className="font-heading text-lg font-bold text-zinc-950 dark:text-white">Product Architecture & Design</h3>
-              <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed text-sm sm:text-base whitespace-pre-line">
-                {product.long_description || product.description}
-              </p>
+            {/* System Architecture & Engineering Breakdown */}
+            <div className="space-y-6 pt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-black/[0.06] dark:border-white/10">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                    <Layers className="w-3.5 h-3.5" />
+                    <span>System Architecture & Engineering</span>
+                  </div>
+                  <h3 className="font-heading text-xl font-bold text-zinc-950 dark:text-white">
+                    Zero-Knowledge Sovereign On-Device Design
+                  </h3>
+                </div>
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0 self-start sm:self-auto">
+                  100% Offline • No Telemetry
+                </span>
+              </div>
+
+              {/* Architecture Premise */}
+              <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/10 text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                Spendlytic is engineered on a <strong className="text-zinc-950 dark:text-white">Zero-Knowledge, Sovereign Data paradigm</strong>. Rather than streaming private financial transactions and bank credentials to third-party cloud servers, every computation—from real-time daily safe limit calculations to predictive machine learning forecasting—executes 100% locally on your iPhone.
+              </div>
+
+              {/* 4 Architectural Pillars Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Pillar 1 */}
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-black/[0.06] dark:border-white/10 space-y-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                      <Zap className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Pillar 01 • Presentation</div>
+                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">120 FPS Motion Pipeline</h4>
+                    </div>
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                    Pure SwiftUI with Metal shader acceleration. Physics-based gestural tracking, fluid haptic feedback engine, and dynamic typographic scaling with zero dropped frames.
+                  </p>
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">SwiftUI 6</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Metal Shaders</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">120Hz ProMotion</span>
+                  </div>
+                </div>
+
+                {/* Pillar 2 */}
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-black/[0.06] dark:border-white/10 space-y-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                      <Cpu className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">Pillar 02 • Machine Learning</div>
+                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">Neural Intelligence Engine</h4>
+                    </div>
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                    Powered by Apple CoreML and Accelerate framework. Local time-series models run on Apple Silicon to compute Daily Safe Spend limits and project 6-month trajectories offline.
+                  </p>
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Apple CoreML</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Neural Engine</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Accelerate FW</span>
+                  </div>
+                </div>
+
+                {/* Pillar 3 */}
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-black/[0.06] dark:border-white/10 space-y-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <ShieldCheck className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Pillar 03 • Security</div>
+                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">Zero-Cloud Persistence Vault</h4>
+                    </div>
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                    Encrypted on-device relational storage guarded by hardware biometrics. Zero external database relays, zero tracking SDKs, and zero telemetry data exfiltration.
+                  </p>
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Core Data</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Secure Enclave</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Face ID Auth</span>
+                  </div>
+                </div>
+
+                {/* Pillar 4 */}
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-black/[0.06] dark:border-white/10 space-y-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                      <Smartphone className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Pillar 04 • Hardware Hooks</div>
+                      <h4 className="text-sm font-bold text-zinc-950 dark:text-white">iOS Surface Integration</h4>
+                    </div>
+                  </div>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                    Real-time Dynamic Island updates, Home & Lock Screen widgets, autonomous midnight Auto-Sweep routines, and on-device PDF audit export compilation.
+                  </p>
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">Dynamic Island</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">ActivityKit</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] text-zinc-600 dark:text-zinc-400 font-medium">PDFKit Engine</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Feature Matrix */}
-            <div className="space-y-3">
-              <h3 className="font-heading text-lg font-bold text-zinc-950 dark:text-white">Core Engineering Capabilities</h3>
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between">
+                <h3 className="font-heading text-lg font-bold text-zinc-950 dark:text-white">Core Engineering Capabilities</h3>
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">Production Features</span>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {product.feature_list.map((feat, idx) => (
                   <div
                     key={idx}
-                    className="flex items-start gap-3 p-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06]"
+                    className="flex items-start gap-3 p-3.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06]"
                   >
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                    <span className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 font-medium leading-normal">
+                    <span className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 font-medium leading-relaxed">
                       {feat}
                     </span>
                   </div>
@@ -204,15 +315,19 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
             </div>
 
             {/* Tech Stack Chips */}
-            <div className="space-y-3">
-              <h3 className="font-heading text-lg font-bold text-zinc-950 dark:text-white">Technologies & Frameworks</h3>
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between">
+                <h3 className="font-heading text-lg font-bold text-zinc-950 dark:text-white">Technologies & Frameworks</h3>
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">Apple Native Toolchain</span>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {product.tech_stack.map((tech, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1.5 rounded-lg bg-black/[0.04] dark:bg-indigo-500/10 text-zinc-800 dark:text-indigo-300 text-xs font-semibold border border-black/[0.06] dark:border-indigo-500/20"
+                    className="px-3.5 py-1.5 rounded-xl bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-xs font-bold border border-indigo-500/20 flex items-center gap-1.5"
                   >
-                    {tech}
+                    <Sparkles className="w-3 h-3 text-indigo-500" />
+                    <span>{tech}</span>
                   </span>
                 ))}
               </div>
